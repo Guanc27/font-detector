@@ -1,0 +1,10 @@
+downloaded_fonts/
+font_dataset/
+docs/
+extension/
+*.ipynb
+.git/
+__pycache__/
+*.pyc
+*.pyo
+.env
