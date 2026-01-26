@@ -20,11 +20,11 @@ RUN python -c "import easyocr; easyocr.Reader(['en'], gpu=False)"
 COPY api_server.py preprocessing.py ./
 
 # Copy model and vector database
-COPY models/best_model.pt models/best_model.pt
+COPY models/best_model2.pt models/best_model2.pt
 COPY vector_db/ vector_db/
 
 # Default env vars (can be overridden at deploy time)
-ENV CHECKPOINT_PATH=models/best_model.pt
+ENV CHECKPOINT_PATH=models/best_model2.pt
 ENV VECTOR_DB_DIR=vector_db
 ENV MODEL_NAME=ViT-B-32
 ENV PRETRAINED=openai
