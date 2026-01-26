@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Font Detector</h1>
+
+    <!-- Action button -->
+    <button id="select-btn" class="primary-btn">Select Text Area</button>
+
+    <!-- Loading indicator -->
+    <div id="loading" class="hidden">
+      <div class="spinner"></div>
+      <p>Detecting font&hellip;</p>
+    </div>
+
+    <!-- Error -->
+    <div id="error" class="hidden error-box"></div>
+
+    <!-- Results list -->
+    <div id="results" class="hidden">
+      <h2>Results</h2>
+      <ul id="results-list"></ul>
+      <p id="meta" class="meta"></p>
+    </div>
+
+    <!-- Settings -->
+    <details class="settings">
+      <summary>Settings</summary>
+      <label for="api-url">API URL</label>
+      <input id="api-url" type="text" placeholder="http://localhost:8000">
+      <button id="save-settings" class="secondary-btn">Save</button>
+      <span id="save-status" class="save-status hidden">Saved</span>
+    </details>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

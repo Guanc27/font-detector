@@ -1,0 +1,170 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 340px;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  color: #202124;
+  background: #fff;
+}
+
+.container {
+  padding: 16px;
+}
+
+h1 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #5f6368;
+}
+
+/* Buttons */
+.primary-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: #4285f4;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.primary-btn:hover { background: #3367d6; }
+
+.secondary-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  color: #4285f4;
+  background: transparent;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.secondary-btn:hover { background: #f1f3f4; }
+
+/* Loading */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #dadce0;
+  border-top-color: #4285f4;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 12px auto 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#loading p {
+  text-align: center;
+  color: #5f6368;
+}
+
+/* Error */
+.error-box {
+  margin-top: 12px;
+  padding: 10px;
+  background: #fce8e6;
+  color: #c5221f;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* Results */
+#results {
+  margin-top: 14px;
+}
+
+#results-list {
+  list-style: none;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.result-rank {
+  font-weight: 700;
+  color: #4285f4;
+  margin-right: 6px;
+  min-width: 18px;
+}
+
+.result-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.result-score {
+  font-size: 12px;
+  color: #5f6368;
+  margin-left: 8px;
+}
+
+.result-link {
+  font-size: 12px;
+  margin-left: 8px;
+  color: #4285f4;
+  text-decoration: none;
+}
+.result-link:hover { text-decoration: underline; }
+
+.meta {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #80868b;
+}
+
+/* Settings */
+.settings {
+  margin-top: 16px;
+  border-top: 1px solid #f1f3f4;
+  padding-top: 10px;
+}
+
+.settings summary {
+  cursor: pointer;
+  color: #5f6368;
+  font-size: 13px;
+}
+
+.settings label {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #5f6368;
+}
+
+.settings input {
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.save-status {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #34a853;
+}
+
+/* Utility */
+.hidden { display: none !important; }
