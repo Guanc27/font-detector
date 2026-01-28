@@ -1,10 +1,12 @@
 ---
-title: Font Detector
+title: Check Fonts
 emoji: 🔤
 colorFrom: blue
 colorTo: purple
 sdk: docker
 app_port: 7860
+pinned: false
+short_description: 'Detects fonts from an image. '
 ---
 
 # Font Detection MVP
@@ -86,4 +88,3 @@ check_fonts/
 ## License
 
 MIT License
-
