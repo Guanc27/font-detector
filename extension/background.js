@@ -9,7 +9,7 @@
  * 5. Store results for the popup to read
  */
 
-const DEFAULT_API_URL = "http://localhost:8000";
+const DEFAULT_API_URL = "https://guanc27-check-fonts.hf.space";
 
 // -------------------------------------------------------------------
 // Context menu
