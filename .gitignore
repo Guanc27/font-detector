@@ -11,9 +11,7 @@ build/
 .venv/
 venv/
 
-# Large binary files (model, dataset, fonts)
-models/
-vector_db/
+# Large binary files (dataset, fonts)
 downloaded_fonts/
 font_dataset/
 fonts/

@@ -32,7 +32,7 @@ from preprocessing import FontImagePreprocessor
 # ---------------------------------------------------------------------------
 # Configuration (environment variables with sensible local defaults)
 # ---------------------------------------------------------------------------
-CHECKPOINT_PATH = os.environ.get("CHECKPOINT_PATH", "models/best_model.pt")
+CHECKPOINT_PATH = os.environ.get("CHECKPOINT_PATH", "models/best_model2.pt")
 VECTOR_DB_DIR = os.environ.get("VECTOR_DB_DIR", "vector_db")
 MODEL_NAME = os.environ.get("MODEL_NAME", "ViT-B-32")
 PRETRAINED = os.environ.get("PRETRAINED", "openai")
