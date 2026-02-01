@@ -11,17 +11,65 @@ short_description: 'Detects fonts from an image. '
 
 # Font Detector
 
-An AI-powered font detection tool. Select text on any webpage using a Chrome extension, and the system identifies the font using deep learning embeddings and vector similarity search.
+An AI-powered font detection tool. Select text on any webpage using a Chrome extension, and the system identifies the font using deep learning embeddings and vector similarity search. The backend is already deployed -- just install the extension and start using it.
 
 **Live API**: https://guanc27-check-fonts.hf.space
 
+## Install the Chrome Extension
+
+1. Clone or download this repository.
+2. Open `chrome://extensions` in Chrome.
+3. Enable **Developer mode** (toggle in top-right).
+4. Click **Load unpacked** and select the `extension/` folder.
+5. The Font Detector icon appears in your toolbar.
+
+## Usage
+
+- **Right-click** anywhere on a webpage and select **Detect Font**.
+- Draw a rectangle around the text you want to identify.
+- Click the **Font Detector icon** in the toolbar to view results.
+
+The extension connects to a hosted API by default. No server setup required.
+
 ## How It Works
 
-1. A Chrome extension lets you draw a rectangle around text on any webpage.
-2. The selected region is screenshotted, cropped, and sent to a FastAPI backend.
-3. The backend preprocesses the image (deskew, normalize, resize) and generates an embedding using a fine-tuned OpenCLIP ViT-B-32 model.
-4. The embedding is compared against a FAISS index of 75 Google Fonts.
-5. The top matches are returned with confidence scores and Google Fonts links.
+1. The Chrome extension screenshots the selected region and sends it to a FastAPI backend hosted on [Hugging Face Spaces](https://huggingface.co/spaces/Guanc27/check_fonts).
+2. The backend preprocesses the image (deskew, normalize, resize) and generates an embedding using a fine-tuned OpenCLIP ViT-B-32 model.
+3. The embedding is compared against a FAISS index of 75 Google Fonts using cosine similarity.
+4. The top matches are returned with confidence scores and Google Fonts links.
+
+## API Reference
+
+The API is public. You can call it directly without the extension.
+
+### POST /detect
+
+```bash
+curl -X POST https://guanc27-check-fonts.hf.space/detect -F "file=@image.png"
+```
+
+**Parameters**:
+- `file` (form-data): Image file (PNG, JPEG, WebP)
+- `top_k` (query, optional): Number of results, 1-50 (default: 5)
+- `mode` (query, optional): `"single"` (pre-cropped region) or `"multi"` (full photo with text detection)
+
+**Response**:
+```json
+{
+  "matches": [
+    {
+      "rank": 1,
+      "font_name": "Roboto",
+      "score": 0.8234,
+      "google_fonts_url": "https://fonts.google.com/specimen/Roboto"
+    }
+  ],
+  "processing_time_ms": 145.3,
+  "regions_detected": 1
+}
+```
+
+Interactive docs are available at https://guanc27-check-fonts.hf.space/docs.
 
 ## Project Structure
 
@@ -48,7 +96,11 @@ check_fonts/
 |   |-- popup.html/css/js      # Extension popup UI
 ```
 
-## Setup
+---
+
+## Development
+
+Everything below is for developers who want to rebuild the model, modify the pipeline, or deploy their own instance.
 
 ### Prerequisites
 
@@ -65,10 +117,6 @@ venv\Scripts\activate        # Windows
 pip install -r requirements.txt
 ```
 
-## Reproducing the Full Pipeline
-
-The pipeline has six phases. If you just want to use the extension with the deployed API, skip to [Install the Chrome Extension](#install-the-chrome-extension).
-
 ### Phase 1: Data Collection
 
 Download 75 Google Fonts and generate 20 training samples per font with varied text, sizes, and color combinations.
@@ -78,7 +126,7 @@ python download_google_fonts.py
 python data_collection.py
 ```
 
-This creates `font_dataset/` with 750+ labeled PNG images and a `metadata.json` mapping each image to its font.
+Creates `font_dataset/` with 750+ labeled PNG images and a `metadata.json` mapping each image to its font.
 
 ### Phase 2: Model Training
 
@@ -104,16 +152,14 @@ Saves `vector_db/faiss.index` and `vector_db/metadata.json`. Uses `IndexFlatIP` 
 
 ### Phase 4: Image Preprocessing
 
-No separate script to run. The `preprocessing.py` module is used at inference time to clean up real-world images before they reach the model:
+No separate script to run. The `preprocessing.py` module is used at inference time to clean up real-world images:
 
 - **Deskew**: Straighten rotated text using OpenCV contour analysis.
 - **Normalize background**: Invert dark backgrounds, apply autocontrast.
 - **Resize and pad**: Scale to 224x224 on a white canvas (avoids cropping wide text).
 - **Text detection** (multi-region mode): EasyOCR locates text regions in full photos.
 
-### Phase 5: API Server
-
-The FastAPI server loads the model, FAISS index, and preprocessor at startup, then exposes two endpoints:
+### Phase 5: Run the API Server Locally
 
 ```bash
 uvicorn api_server:app --reload --port 8000
@@ -124,37 +170,11 @@ uvicorn api_server:app --reload --port 8000
 | `/health` | GET | Server status, model info, index stats |
 | `/detect` | POST | Upload an image, returns top-K font matches |
 
-Test with curl:
-```bash
-curl -X POST http://localhost:8000/detect -F "file=@test.png"
-```
+Open http://localhost:8000/docs for the interactive Swagger UI. To point the extension at your local server, click the extension icon, expand **Settings**, and change the API URL to `http://localhost:8000`.
 
-Or open http://localhost:8000/docs for the interactive Swagger UI.
-
-### Phase 6: Chrome Extension
-
-The extension provides the browser UI for font detection.
-
-#### Install the Chrome Extension
-
-1. Open `chrome://extensions` in Chrome.
-2. Enable **Developer mode** (toggle in top-right).
-3. Click **Load unpacked** and select the `extension/` folder.
-4. The Font Detector icon appears in your toolbar.
-
-#### Usage
-
-- **Right-click** anywhere on a webpage and select **Detect Font**.
-- Draw a rectangle around the text you want to identify.
-- Click the **Font Detector icon** in the toolbar to view results.
-
-The extension defaults to the deployed API at `https://guanc27-check-fonts.hf.space`. To use a local server instead, click the extension icon, expand **Settings**, and change the API URL to `http://localhost:8000`.
-
-## Deployment
+### Deploy Your Own Instance
 
 The API is deployed as a Docker container on [Hugging Face Spaces](https://huggingface.co/spaces/Guanc27/check_fonts).
-
-To deploy your own instance:
 
 1. Create a new Space on [huggingface.co](https://huggingface.co/new-space) with the Docker SDK.
 2. Add the Space as a git remote:
@@ -167,31 +187,6 @@ To deploy your own instance:
    ```
 
 The `Dockerfile` handles everything: installs dependencies, pre-downloads EasyOCR models, copies the trained model and vector database, and starts Uvicorn on port 7860.
-
-## API Reference
-
-### POST /detect
-
-**Request**:
-- `file` (form-data): Image file (PNG, JPEG, WebP)
-- `top_k` (query, optional): Number of results, 1-50 (default: 5)
-- `mode` (query, optional): `"single"` (pre-cropped region) or `"multi"` (full photo with text detection)
-
-**Response**:
-```json
-{
-  "matches": [
-    {
-      "rank": 1,
-      "font_name": "Roboto",
-      "score": 0.8234,
-      "google_fonts_url": "https://fonts.google.com/specimen/Roboto"
-    }
-  ],
-  "processing_time_ms": 145.3,
-  "regions_detected": 1
-}
-```
 
 ## License
 
