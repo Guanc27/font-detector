@@ -1,3 +1,12 @@
+---
+title: Font Detector
+emoji: 🔤
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_port: 7860
+---
+
 # Font Detection MVP
 
 An AI-powered font detection application that identifies fonts from images using deep learning embeddings and vector similarity search.
